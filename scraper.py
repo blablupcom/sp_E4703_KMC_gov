@@ -98,14 +98,16 @@ soup = BeautifulSoup(html, 'lxml')
 block = soup.find('dl', attrs = {'class':'accordion'})
 links = block.find_all('a')
 for link in links:
-    csvlink = 'http://www.kirklees.gov.uk'+link['href']
-    if '.csv' in csvlink or '.xls' in csvlink or '.xlsx' in csvlink or '.pdf' in csvlink:
-        if 'expendit' in csvlink and 'purchasing' not in csvlink:
+    csvlink = link['href']
+    if '/pdf/' in csvlink:
+        if 'data of expenditure' in link.text.strip():
             csvfile = link.text.strip()
-            csvMth = csvfile[:3]
+            linkfile = 'http://www.kirklees.gov.uk' + link['href']
+            csvMth = csvfile.split(' ')[0][:3]
             csvYr = csvfile.split(' ')[1]
             csvMth = convert_mth_strings(csvMth.upper())
-            data.append([csvYr, csvMth, csvlink])
+            data.append([csvYr, csvMth, linkfile])
+
 
 #### STORE DATA 1.0
 
